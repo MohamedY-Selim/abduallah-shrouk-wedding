@@ -47,6 +47,14 @@ main{background:#eeece1}main:before{display:none}
 .rsvp:before{mask-image:linear-gradient(to bottom,transparent 0%,#000 15%,#000 72%,transparent 100%);-webkit-mask-image:linear-gradient(to bottom,transparent 0%,#000 15%,#000 72%,transparent 100%)}
 footer{background:#eeece1;border-top:0}
 }
+
+/* Mobile RSVP: quiet, consistent form surface over softly blended artwork. */
+@media(max-width:899px){
+.rsvp{padding:70px 22px 80px;min-height:0}
+.rsvp:before{inset:0;background-size:cover;background-position:center;opacity:.65;mask-image:linear-gradient(to bottom,transparent 0%,#000 22%,#000 75%,transparent 100%);-webkit-mask-image:linear-gradient(to bottom,transparent 0%,#000 22%,#000 75%,transparent 100%)}
+.rsvp-inner{position:relative;background:rgba(255,253,247,.94);padding:32px 22px;border:1px solid #d9cdb8;border-radius:12px;box-shadow:0 8px 32px rgba(88,70,42,.06)}
+.rsvp .title{margin:0 0 28px}.rsvp input:not([type=radio]),.rsvp textarea,.rsvp .choice{background:#fffdf8;border-color:#d8ccb9}.rsvp .textlink{width:100%;border-radius:5px}.rsvp .form-note{font-size:13px;line-height:1.6}.rsvp #response-status:empty{display:none}
+}
 </style></head><body><main>
 <section class="hero" id="home"><div class="intro"><div class="eyebrow">Together with our families</div><h1 class="names"><span>Abduallah</span><span class="amp">&</span><span>Shrouk</span></h1><p class="romantic">Invite you to celebrate their wedding</p><p class="date">11 . 12 . 2026</p><a class="btn" href="#details">Discover our day</a></div></section>
 <section class="count-section" aria-label="Wedding countdown"><div class="label">COUNTING THE MOMENTS</div><h2 class="title" id="count-title">Until we say “I do”</h2><div class="count"><div><strong id="days">—</strong><small>Days</small></div><div><strong id="hours">—</strong><small>Hours</small></div><div><strong id="minutes">—</strong><small>Minutes</small></div><div><strong id="seconds">—</strong><small>Seconds</small></div></div></section>
