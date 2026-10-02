@@ -12,7 +12,8 @@ Import this repository. The included `vercel.json` serves `dist` with no build s
 
 ## Current limitations
 
-- RSVP responses are not sent or saved.
+- RSVP requires deploying setup/Code.gs as a Google Apps Script web app and configuring RSVP_SCRIPT_URL and RSVP_SECRET in Vercel. Until configured, submissions return an unavailable message.
+- Local static preview cannot run /api/rsvp; live end-to-end verification is still pending.
 - The venue illustration is decorative, not a depiction of the actual venue.
 - The couple photo is a placeholder.
 - Event time assumes 11 December 2026, 7–11 PM, Cairo time.
