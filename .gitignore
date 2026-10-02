@@ -1,0 +1,5 @@
+.openai/
+.vercel/
+.DS_Store
+.env
+.env.*

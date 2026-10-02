@@ -1,0 +1,14 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Abduallah and Shrouk//Wedding//EN
+BEGIN:VEVENT
+UID:abduallah-shrouk-20261211
+DTSTAMP:20261003T000000Z
+DTSTART:20261211T170000Z
+DTEND:20261211T210000Z
+SUMMARY:Abduallah & Shrouk Wedding
+LOCATION:Grand Hall - Al Nakheel Events Venue
+DESCRIPTION:https://maps.app.goo.gl/c4A4uoabDSpxjncN8
+URL:https://maps.app.goo.gl/c4A4uoabDSpxjncN8
+END:VEVENT
+END:VCALENDAR
