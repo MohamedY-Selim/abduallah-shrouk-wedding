@@ -87,6 +87,8 @@ body.cover-locked main,body.cover-locked footer{visibility:hidden}
 .invitation-cover.is-card-ready .envelope-letter{visibility:visible}
 .invitation-cover.is-card-ready .envelope-flap{z-index:0}
 .invitation-cover.is-card-out .envelope-letter{transform:translateY(-65%)}
+
+.music-toggle{position:fixed;right:18px;bottom:calc(18px + env(safe-area-inset-bottom));z-index:20;border:1px solid #b99b6e;border-radius:30px;background:#fffaf0;color:#59402c;padding:10px 16px;min-height:44px;box-shadow:0 3px 16px #59402c20;font:13px Arial,sans-serif;cursor:pointer}.music-toggle[hidden]{display:none}
 </style></head><body><div class="invitation-cover" id="invitation-cover" role="dialog" aria-modal="true" aria-label="Open your wedding invitation" hidden>
 
 <button class="envelope-button" id="open-invitation" type="button" aria-label="Open Abduallah and Shrouk’s wedding invitation">
@@ -96,14 +98,36 @@ body.cover-locked main,body.cover-locked footer{visibility:hidden}
 <section class="venue-section" id="details"><div class="label">OUR WEDDING DAY</div><img class="venue-small" src="venue-art.png" alt="Decorative architectural illustration"><h2 class="title">Al Nakheel Events Venue</h2><p class="hall">Grand Hall</p><a class="textlink" href="https://maps.app.goo.gl/c4A4uoabDSpxjncN8" target="_blank" rel="noopener noreferrer">Location</a><p class="event-date">Friday, 11 December 2026<br>7:00–11:00 PM</p><p>Cairo time</p><a class="calendar" href="wedding.ics" download>Add to calendar</a><img class="venue-large" src="venue-art.png" alt=""></section>
 <section class="portrait-section" id="portrait" aria-label="Couple photo"><div class="portrait-space"><div class="label">OUR FOREVER</div><h2 class="title">A moment, just us</h2><img class="couple-portrait" src="couple-sunset.jpeg" alt="Bride and groom holding hands by the sea at sunset" width="864" height="1224" loading="lazy"></div></section>
 <section class="rsvp" id="rsvp"><div class="rsvp-inner"><h2 class="title">RSVP</h2><form id="rsvp-form"><div aria-hidden="true" style="position:absolute;left:-10000px"><label for="website">Leave blank</label><input id="website" name="website" tabindex="-1" autocomplete="off"></div><label for="guest-name">Your name <span aria-hidden="true">*</span></label><input id="guest-name" name="name" autocomplete="name" required maxlength="120"><fieldset><legend>Will you be attending our day? *</legend><label class="choice"><input type="radio" name="attending" value="yes" required> Joyfully accepts</label><label class="choice"><input type="radio" name="attending" value="no" required> Regretfully declines</label></fieldset><label for="wishes">Your wishes for the couple</label><textarea id="wishes" name="wishes" rows="4" maxlength="2000"></textarea><p class="form-note" id="form-note">Your response will be shared privately with the couple. Online RSVP activation is in progress.</p><button type="submit" class="textlink">Send response</button><p id="response-status" role="status" aria-live="polite"></p></form></div></section></main><footer>Abduallah & Shrouk<small>Made with love · 11 December 2026</small></footer>
+<audio id="wedding-music" src="wedding-song.mp3" preload="metadata" loop></audio><button id="music-toggle" class="music-toggle" type="button" hidden aria-label="Play music">♫ Play music</button>
 <script>
+const music=document.getElementById('wedding-music'),musicToggle=document.getElementById('music-toggle');
+let musicContext,musicGain,musicRevealed=false;
+function syncMusic(){const playing=!music.paused;musicToggle.textContent=playing?'♫ Pause music':'♫ Play music';musicToggle.setAttribute('aria-label',playing?'Pause music':'Play music');}
+function prepareMusic(){
+ try{
+  const AudioEngine=window.AudioContext||window.webkitAudioContext;
+  if(!AudioEngine)return;
+  musicContext=new AudioEngine();musicGain=musicContext.createGain();musicGain.gain.value=0;
+  musicContext.createMediaElementSource(music).connect(musicGain);musicGain.connect(musicContext.destination);
+  musicContext.resume().catch(()=>{});music.play().catch(syncMusic);
+ }catch{syncMusic();}
+}
+function revealMusic(){
+ if(musicRevealed)return;musicRevealed=true;musicToggle.hidden=false;
+ music.currentTime=0;
+ if(musicGain){musicGain.gain.setValueAtTime(0,musicContext.currentTime);musicGain.gain.linearRampToValueAtTime(.65,musicContext.currentTime+1.2);}
+ music.play().then(syncMusic).catch(syncMusic);
+}
+musicToggle.addEventListener('click',()=>{if(music.paused){if(musicContext)musicContext.resume().catch(()=>{});music.play().then(syncMusic).catch(syncMusic);}else music.pause();});
+music.addEventListener('play',syncMusic);music.addEventListener('pause',syncMusic);
+
 const cover=document.getElementById('invitation-cover'),openInvitation=document.getElementById('open-invitation');
 const invitationContent=[document.querySelector('main'),document.querySelector('footer')];
 cover.hidden=false;document.body.classList.add('cover-locked');invitationContent.forEach(el=>el.inert=true);
 cover.tabIndex=-1;cover.focus({preventScroll:true});
 let openingInvitation=false;
 function revealInvitation(){
- if(openingInvitation)return;openingInvitation=true;
+ if(openingInvitation)return;openingInvitation=true;prepareMusic();
  const flap=cover.querySelector('.envelope-flap');
  const liftCard=()=>{
   cover.classList.add('is-card-ready');
@@ -113,7 +137,7 @@ function revealInvitation(){
  cover.classList.add('is-opening');
  const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
  const finish=()=>{
-  cover.hidden=true;invitationContent.forEach(el=>el.inert=false);
+  cover.hidden=true;revealMusic();invitationContent.forEach(el=>el.inert=false);
   document.body.classList.remove('cover-locked');
   const heading=document.querySelector('h1');heading.tabIndex=-1;heading.focus({preventScroll:true});
  };
@@ -122,7 +146,7 @@ function revealInvitation(){
   cover.classList.add('is-clearing');
   setTimeout(()=>{
    invitationContent.forEach(el=>el.inert=false);document.body.classList.remove('cover-locked');
-   cover.classList.add('is-leaving');
+   cover.classList.add('is-leaving');revealMusic();
    setTimeout(finish,700);
   },400);
  },2200);
